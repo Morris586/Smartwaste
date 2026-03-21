@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5">
+
+    <h1 class="text-center mb-5">SmartWaste Operations Dashboard</h1>
+
+    <!-- PICKUP METRICS -->
+
+    <h3 class="mb-3">Pickup Metrics</h3>
+
+    <div class="row g-3">
+
+        <div class="col-md-3">
+            <div class="card shadow-sm p-3 text-center">
+                <h6>Total Pickups</h6>
+                <h2>{{ total_pickups }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm p-3 text-center">
+                <h6>Pending</h6>
+                <h2 class="text-warning">{{ pending_pickups }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm p-3 text-center">
+                <h6>Assigned</h6>
+                <h2 class="text-primary">{{ assigned_pickups }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm p-3 text-center">
+                <h6>Completed</h6>
+                <h2 class="text-success">{{ completed_pickups }}</h2>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- DRIVER METRICS -->
+
+    <h3 class="mt-5 mb-3">Driver Metrics</h3>
+
+    <div class="row g-3">
+
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3 text-center">
+                <h6>Available Drivers</h6>
+                <h2 class="text-success">{{ available_drivers }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3 text-center">
+                <h6>En-Route Drivers</h6>
+                <h2 class="text-primary">{{ enroute_drivers }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3 text-center">
+                <h6>Off Duty</h6>
+                <h2>{{ off_duty_drivers }}</h2>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TRUCK METRICS -->
+
+    <h3 class="mt-5 mb-3">Truck Metrics</h3>
+
+    <div class="row g-3">
+
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3 text-center">
+                <h6>Total Trucks</h6>
+                <h2>{{ total_trucks }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3 text-center">
+                <h6>Available Trucks</h6>
+                <h2 class="text-success">{{ available_trucks }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3 text-center">
+                <h6>Busy Trucks</h6>
+                <h2 class="text-danger">{{ busy_trucks }}</h2>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SYSTEM HEALTH -->
+
+    <h3 class="mt-5 mb-3">System Health</h3>
+
+    <div class="card shadow-sm p-4">
+
+        <p>
+            <strong>Stuck Pickups (Assigned > 2hrs):</strong>
+            <span class="text-danger">{{ stuck_pickups }}</span>
+        </p>
+
+        <p>
+            <strong>Idle Dispatch Detected:</strong>
+
+            {% if idle_dispatch %}
+            <span class="text-danger">YES</span>
+            {% else %}
+            <span class="text-success">NO</span>
+            {% endif %}
+
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}

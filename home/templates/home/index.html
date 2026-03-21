@@ -1,0 +1,79 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Waste Routing System</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'home/css/styles.css' %}">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">SmartWaste</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero d-flex align-items-center text-center text-white">
+        <div class="container">
+            <h1 class="display-4 fw-bold">Smart Waste Collection & Route Optimization</h1>
+            <p class="lead mt-3">Efficient, automated and intelligent waste pickup for modern cities.</p>
+
+            <a href="/pickups/request/" class="btn btn-primary btn-lg">
+                Request Pickup
+            </a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="container py-5">
+        <h2 class="text-center fw-bold mb-4">Key Features</h2>
+
+        <div class="row g-4">
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm text-center p-3">
+                    <h4 class="fw-bold">Auto-Geocoding</h4>
+                    <p>Pickup addresses automatically generate latitude & longitude.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm text-center p-3">
+                    <h4 class="fw-bold">Optimized Routes</h4>
+                    <p>Trucks are routed using shortest-path algorithms from ORS API.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm text-center p-3">
+                    <h4 class="fw-bold">Real-Time Requests</h4>
+                    <p>Admins view and manage incoming requests instantly.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-3 text-center">
+        <p class="mb-0">© 2025 SmartWaste Routing System</p>
+    </footer>
+
+
+
+
+</body>
+
+</html>
