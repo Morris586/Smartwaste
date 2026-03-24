@@ -1,95 +1,48 @@
 {% extends "base.html" %}
 {% block content %}
 
-<style>
-    h2 {
-        text-align: center;
-        color: #2c3e50;
-        margin-bottom: 20px;
-    }
+<div class="container mt-4 mb-5">
+    <h2 class="mb-2 section-title">Assigned Pickups</h2>
+    <p class="text-muted mb-4">Your scheduled waste collections. Mark as collected when done.</p>
 
-    .card {
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    th {
-        background: #2c3e50;
-        color: white;
-        padding: 12px;
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 13px;
-    }
-
-    td {
-        padding: 10px;
-        border-bottom: 1px solid #eee;
-    }
-
-    .status {
-        padding: 5px 10px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: bold;
-    }
-
-    .assigned {
-        background: #fff3cd;
-        color: #856404;
-    }
-
-    .empty {
-        text-align: center;
-        padding: 20px;
-        color: #888;
-        font-style: italic;
-    }
-</style>
-
-<h2>Assigned Waste Pickups</h2>
-
-<div class="card">
-    <table>
-        <tr>
-            <th>Name</th>
-            <th>Phone</th>
-            <th>Address</th>
-            <th>Waste Type</th>
-            <th>Truck</th>
-            <th>Status</th>
-            <th>Action</th>
-        </tr>
-
-        {% for pickup in pickups %}
-        <tr>
-            <td>{{ pickup.name }}</td>
-            <td>{{ pickup.phone }}</td>
-            <td>{{ pickup.address }}</td>
-            <td>{{ pickup.waste_type }}</td>
-            <td>{{ pickup.assigned_truck.name }}</td>
-            <td>
-                <span class="status assigned">{{ pickup.status }}</span>
-            </td>
-            <td>
-                <a href="{% url 'mark_as_collected' pickup.id %}" class="btn btn-success btn-sm">
-                    Mark as Collected
-                </a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="7" class="empty">No assigned pickups at the moment.</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <div class="card card-smartwaste overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-smartwaste mb-0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Address</th>
+                        <th>Waste Type</th>
+                        <th>Truck</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pickup in pickups %}
+                    <tr>
+                        <td>{{ pickup.name }}</td>
+                        <td>{{ pickup.phone }}</td>
+                        <td>{{ pickup.address }}</td>
+                        <td>{{ pickup.waste_type }}</td>
+                        <td>{{ pickup.assigned_truck.name }}</td>
+                        <td>
+                            <span class="status-badge status-assigned">{{ pickup.status }}</span>
+                        </td>
+                        <td>
+                            <a href="{% url 'mark_as_collected' pickup.id %}" class="btn btn-smartwaste btn-sm">Mark as Collected</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-5">No assigned pickups at the moment.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 {% endblock %}

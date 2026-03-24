@@ -1,18 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2 class="mb-4">Pickups Management</h2>
+<div class="container mt-5 mb-5">
+    <h2 class="mb-2 section-title">Pickups</h2>
+    <p class="text-muted mb-4">Request a waste collection or check your assigned pickups</p>
 
-<div class="list-group">
-
-    <a href="/pickups/request/" class="list-group-item list-group-item-action">
-        Create Pickup Request
-    </a>
-
-    <a href="/pickups/assigned/" class="list-group-item list-group-item-action">
-        View Assigned Pickups
-    </a>
-
+    <div class="list-group">
+        <a href="{% url 'request_pickup' %}" class="list-group-item list-group-item-action list-group-item-smartwaste py-3">
+            <strong>Request a pickup</strong> — Schedule waste collection at your address
+        </a>
+        <a href="{% url 'assigned_pickups' %}" class="list-group-item list-group-item-action list-group-item-smartwaste py-3">
+            <strong>View assigned pickups</strong> — See your scheduled collections
+        </a>
+    </div>
 </div>
 
 {% endblock %}

@@ -24,7 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-&k3lm$hjr)^em@d)xdgtv)r8mpq+0$3e%22nb6vtwg8fu#!^dn"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Render sets DEBUG=0; locally use DEBUG=1 so Django serves static files
+import os
+DEBUG = os.environ.get('DEBUG', '1') == '1'
 
 ALLOWED_HOSTS = []
 

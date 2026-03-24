@@ -1,0 +1,502 @@
+/* SmartWaste — Eco-Friendly Environmental Care Theme */
+/* Greens, earthy tones, soft backgrounds, clean typography */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@400;500;600;700&display=swap');
+
+:root {
+    /* Greens — nature, growth, eco */
+    --eco-sage: #7d9a6e;
+    --eco-mint: #a8d5a2;
+    --eco-forest: #2d5a3d;
+    --eco-leaf: #4a7c59;
+    --eco-pale: #e8f0e4;
+    --eco-soft: #d4e8ce;
+
+    /* Earth tones */
+    --earth-warm: #c4a77d;
+    --earth-sand: #e8e0d5;
+    --earth-clay: #b8956b;
+    --earth-soft: #f5efe6;
+
+    /* Sky / trust / clean */
+    --sky-light: #a8d4e6;
+    --sky-soft: #d4eef7;
+    --sky-blue: #3a8fb7;
+    --ocean-teal: #2a9d8f;
+
+    /* Backgrounds */
+    --bg-cream: #fdfcf9;
+    --bg-linen: #f9f7f2;
+    --bg-mist: #f4f7f2;
+    --bg-paper: #faf9f5;
+
+    /* Text */
+    --text-soft: #3d4a3d;
+    --text-body: #4a5548;
+    --text-muted: #6b7a6b;
+
+    /* Accent for CTA */
+    --cta-green: #2a9d8f;
+    --cta-green-hover: #238276;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-linen);
+    color: var(--text-body);
+    font-family: 'DM Sans', system-ui, sans-serif;
+    line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Outfit', sans-serif;
+    color: var(--text-soft);
+}
+
+/* Navbar — soft sage, eco feel */
+.navbar-smartwaste {
+    background: linear-gradient(90deg, var(--eco-forest) 0%, var(--eco-leaf) 100%) !important;
+    box-shadow: 0 2px 16px rgba(45, 90, 61, 0.2);
+}
+
+.navbar-smartwaste .navbar-brand {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 1.35rem;
+    color: white !important;
+    letter-spacing: -0.02em;
+}
+
+.navbar-smartwaste .nav-link {
+    color: rgba(255, 255, 255, 0.92) !important;
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 0.5rem 0.9rem !important;
+}
+
+.navbar-smartwaste .nav-link:hover {
+    color: white !important;
+    background: rgba(255, 255, 255, 0.18);
+}
+
+/* Hero — environmental background: sky, trees, clean earth */
+.hero-eco {
+    min-height: 65vh;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    padding: 4rem 0;
+}
+
+/* Layered gradient: soft sky → meadow → earth — clean environment feel */
+.hero-eco::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(180deg,
+            rgba(212, 235, 245, 0.7) 0%,
+            /* soft sky */
+            rgba(232, 245, 233, 0.6) 20%,
+            /* light mint */
+            rgba(200, 230, 201, 0.5) 40%,
+            /* meadow green */
+            rgba(232, 240, 218, 0.6) 60%,
+            /* pale grass */
+            rgba(245, 240, 230, 0.7) 80%,
+            /* warm earth */
+            rgba(249, 247, 242, 0.95) 100%);
+    z-index: 0;
+}
+
+/* Organic meadow/tree silhouettes (soft blobs) */
+.hero-eco::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background:
+        radial-gradient(ellipse 100% 80% at 10% 110%, rgba(125, 154, 110, 0.25) 0%, transparent 45%),
+        radial-gradient(ellipse 90% 70% at 90% 105%, rgba(74, 124, 89, 0.22) 0%, transparent 45%),
+        radial-gradient(ellipse 80% 60% at 50% 100%, rgba(168, 213, 162, 0.28) 0%, transparent 50%);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.hero-eco .container {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-eco h1 {
+    color: var(--eco-forest);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-eco .hero-subtitle {
+    color: var(--text-body);
+    font-size: 1.15rem;
+    max-width: 540px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* CTA — inviting green/teal button */
+.btn-cta {
+    background: linear-gradient(135deg, var(--cta-green) 0%, var(--ocean-teal) 100%);
+    color: white !important;
+    border: none;
+    font-weight: 600;
+    padding: 0.85rem 2rem;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    box-shadow: 0 4px 20px rgba(42, 157, 143, 0.35);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-cta:hover {
+    background: linear-gradient(135deg, var(--cta-green-hover) 0%, #1d7a6e 100%);
+    color: white !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 28px rgba(42, 157, 143, 0.4);
+}
+
+/* Secondary / outline button */
+.btn-outline-eco {
+    border: 2px solid var(--eco-leaf);
+    color: var(--eco-leaf);
+    background: transparent;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 0.5rem 1.25rem;
+}
+
+.btn-outline-eco:hover {
+    background: var(--eco-pale);
+    color: var(--eco-forest);
+    border-color: var(--eco-forest);
+}
+
+/* Feature cards — soft green tints */
+.feature-card {
+    border-radius: 16px;
+    border: 1px solid rgba(125, 154, 110, 0.2);
+    background: white;
+    box-shadow: 0 4px 24px rgba(45, 90, 61, 0.06);
+    transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.feature-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(45, 90, 61, 0.12);
+}
+
+.feature-card h4 {
+    color: var(--eco-forest);
+    font-weight: 600;
+}
+
+.feature-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: var(--eco-pale);
+    color: var(--eco-leaf);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin: 0 auto 1rem;
+}
+
+/* Section titles */
+.section-title {
+    color: var(--eco-forest);
+    font-weight: 600;
+}
+
+/* Dashboard — each metric gets its own color, service-like */
+.metric-card {
+    border-radius: 14px;
+    border: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    transition: transform 0.2s;
+}
+
+.metric-card:hover {
+    transform: translateY(-2px);
+}
+
+.metric-card h6 {
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Pickup metrics — varied, friendly colors */
+.metric-total {
+    background: linear-gradient(135deg, var(--eco-pale) 0%, var(--eco-soft) 100%);
+}
+
+.metric-total h6 {
+    color: var(--eco-forest);
+}
+
+.metric-total h2 {
+    color: var(--eco-leaf);
+}
+
+.metric-pending {
+    background: linear-gradient(135deg, #fff5e0 0%, #ffe8c4 100%);
+}
+
+.metric-pending h6 {
+    color: #b8860b;
+}
+
+.metric-pending h2 {
+    color: #d4a017;
+}
+
+.metric-assigned {
+    background: linear-gradient(135deg, var(--sky-soft) 0%, #b8e4f0 100%);
+}
+
+.metric-assigned h6 {
+    color: var(--sky-blue);
+}
+
+.metric-assigned h2 {
+    color: #2a7a9e;
+}
+
+.metric-completed {
+    background: linear-gradient(135deg, var(--eco-pale) 0%, #c8e6c9 100%);
+}
+
+.metric-completed h6 {
+    color: var(--eco-leaf);
+}
+
+.metric-completed h2 {
+    color: var(--eco-forest);
+}
+
+/* Driver metrics */
+.metric-available {
+    background: linear-gradient(135deg, #e8f5e9 0%, var(--eco-soft) 100%);
+}
+
+.metric-available h6 {
+    color: var(--eco-leaf);
+}
+
+.metric-available h2 {
+    color: var(--eco-forest);
+}
+
+.metric-enroute {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+}
+
+.metric-enroute h6 {
+    color: #1976d2;
+}
+
+.metric-enroute h2 {
+    color: #0d47a1;
+}
+
+.metric-offduty {
+    background: linear-gradient(135deg, var(--earth-soft) 0%, var(--earth-sand) 100%);
+}
+
+.metric-offduty h6 {
+    color: var(--earth-clay);
+}
+
+.metric-offduty h2 {
+    color: #8b6914;
+}
+
+/* Truck metrics */
+.metric-trucks-total {
+    background: linear-gradient(135deg, var(--earth-soft) 0%, #ede5da 100%);
+}
+
+.metric-trucks-total h6 {
+    color: var(--earth-clay);
+}
+
+.metric-trucks-total h2 {
+    color: #5d4e37;
+}
+
+.metric-trucks-avail {
+    background: linear-gradient(135deg, var(--eco-pale) 0%, #dcedc8 100%);
+}
+
+.metric-trucks-avail h6 {
+    color: var(--eco-leaf);
+}
+
+.metric-trucks-avail h2 {
+    color: var(--eco-forest);
+}
+
+.metric-trucks-busy {
+    background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+}
+
+.metric-trucks-busy h6 {
+    color: #c62828;
+}
+
+.metric-trucks-busy h2 {
+    color: #b71c1c;
+}
+
+/* Cards — forms, tables */
+.card-smartwaste {
+    border: 1px solid rgba(125, 154, 110, 0.15);
+    border-radius: 14px;
+    background: white;
+    box-shadow: 0 4px 24px rgba(45, 90, 61, 0.06);
+}
+
+.card-smartwaste h2,
+.card-smartwaste h3 {
+    color: var(--eco-forest);
+}
+
+/* Buttons — primary action */
+.btn-smartwaste {
+    background: linear-gradient(135deg, var(--cta-green) 0%, var(--ocean-teal) 100%);
+    border: none;
+    color: white !important;
+    font-weight: 600;
+    padding: 0.55rem 1.25rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(42, 157, 143, 0.3);
+}
+
+.btn-smartwaste:hover {
+    background: linear-gradient(135deg, var(--cta-green-hover) 0%, #1d7a6e 100%);
+    color: white !important;
+    box-shadow: 0 4px 16px rgba(42, 157, 143, 0.35);
+}
+
+.btn-outline-smartwaste {
+    border: 2px solid var(--eco-leaf);
+    color: var(--eco-leaf);
+    background: transparent;
+    font-weight: 600;
+    border-radius: 10px;
+}
+
+.btn-outline-smartwaste:hover {
+    background: var(--eco-pale);
+    color: var(--eco-forest);
+    border-color: var(--eco-forest);
+}
+
+/* List items — pickup links */
+.list-group-item-smartwaste {
+    border-left: 4px solid var(--eco-leaf);
+    border-radius: 10px;
+    margin-bottom: 0.5rem;
+    background: white;
+    transition: all 0.2s ease;
+}
+
+.list-group-item-smartwaste:hover {
+    background: var(--eco-pale);
+    border-left-color: var(--eco-forest);
+}
+
+/* Table — assigned pickups */
+.table-smartwaste th {
+    background: linear-gradient(135deg, var(--eco-forest) 0%, var(--eco-leaf) 100%);
+    color: white;
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 14px 18px;
+    border: none;
+}
+
+.table-smartwaste td {
+    padding: 14px 18px;
+    vertical-align: middle;
+}
+
+.table-smartwaste tbody tr {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.table-smartwaste tbody tr:hover {
+    background: var(--eco-pale);
+}
+
+.status-badge {
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.status-assigned {
+    background: var(--sky-soft);
+    color: var(--sky-blue);
+}
+
+.status-pending {
+    background: #fff8e1;
+    color: #f57c00;
+}
+
+.status-completed {
+    background: var(--eco-pale);
+    color: var(--eco-forest);
+}
+
+/* Footer */
+.footer-smartwaste {
+    background: linear-gradient(90deg, var(--eco-forest) 0%, var(--eco-leaf) 100%);
+    color: rgba(255, 255, 255, 0.95);
+}
+
+/* Forms — welcoming, not bureaucratic */
+.form-control,
+.form-select {
+    border-radius: 10px;
+    border: 1px solid rgba(125, 154, 110, 0.25);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--eco-leaf);
+    box-shadow: 0 0 0 3px rgba(125, 154, 110, 0.2);
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--text-soft);
+}

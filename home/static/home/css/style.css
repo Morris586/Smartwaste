@@ -1,5 +1,4 @@
-.hero {
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-        url("/static/home/images/garbage-truck.jpg") center/cover no-repeat;
-    height: 70vh;
+/* Home page — hero environmental background */
+.hero-eco {
+    min-height: 65vh;
 }
