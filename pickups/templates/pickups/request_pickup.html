@@ -1,44 +1,511 @@
 {% extends "base.html" %}
+{% block title %}Request a Pickup — SmartWaste{% endblock %}
+{% block nav_request %}active{% endblock %}
+
+{% block extra_head %}
+<style>
+    .rp-page {
+        min-height: calc(100vh - 64px);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    /* ── LEFT PANEL (dark brand) ── */
+    .rp-left {
+        background: var(--ink);
+        padding: 5rem 4rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .rp-left::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+            radial-gradient(ellipse 65% 55% at 10% 90%, rgba(45, 106, 63, 0.3) 0%, transparent 55%),
+            radial-gradient(ellipse 45% 60% at 90% 10%, rgba(76, 175, 110, 0.15) 0%, transparent 50%);
+    }
+
+    .rp-left::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+            linear-gradient(rgba(168, 224, 99, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(168, 224, 99, 0.03) 1px, transparent 1px);
+        background-size: 40px 40px;
+    }
+
+    .rp-left-inner {
+        position: relative;
+        z-index: 1;
+    }
+
+    .rp-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: rgba(168, 224, 99, 0.1);
+        border: 1px solid rgba(168, 224, 99, 0.18);
+        border-radius: var(--r-pill);
+        padding: 5px 14px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--lime);
+        margin-bottom: 2.5rem;
+    }
+
+    .rp-tag-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--lime);
+        animation: pulse 2s ease infinite;
+    }
+
+    .rp-left-title {
+        font-family: var(--font-head);
+        font-size: clamp(2rem, 3.5vw, 2.8rem);
+        font-weight: 900;
+        line-height: 1.05;
+        letter-spacing: -0.04em;
+        color: var(--white);
+        margin-bottom: 1.25rem;
+    }
+
+    .rp-left-title em {
+        font-style: normal;
+        color: var(--lime);
+    }
+
+    .rp-left-desc {
+        font-size: 0.975rem;
+        color: var(--text-on-dark2);
+        line-height: 1.8;
+        max-width: 380px;
+        margin-bottom: 3rem;
+    }
+
+    /* Info list */
+    .info-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 1rem 1.25rem;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(168, 224, 99, 0.08);
+        border-radius: var(--r-lg);
+    }
+
+    .info-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: rgba(168, 224, 99, 0.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 17px;
+        flex-shrink: 0;
+    }
+
+    .info-text-title {
+        font-family: var(--font-head);
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--white);
+        margin-bottom: 2px;
+        letter-spacing: -0.01em;
+    }
+
+    .info-text-desc {
+        font-size: 0.78rem;
+        color: var(--text-on-dark3);
+        line-height: 1.5;
+    }
+
+    /* ── RIGHT PANEL (form) ── */
+    .rp-right {
+        background: var(--fog);
+        padding: 4rem 3.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow-y: auto;
+    }
+
+    .rp-form-wrap {
+        width: 100%;
+        max-width: 480px;
+    }
+
+    .form-card {
+        background: var(--white);
+        border: 1px solid rgba(45, 106, 63, 0.10);
+        border-radius: var(--r-xl);
+        overflow: hidden;
+        box-shadow: 0 8px 40px rgba(45, 106, 63, 0.08);
+    }
+
+    .form-card-header {
+        padding: 1.75rem 2rem 1.5rem;
+        border-bottom: 1px solid rgba(45, 106, 63, 0.08);
+        background: var(--ink);
+    }
+
+    .form-card-title {
+        font-family: var(--font-head);
+        font-size: 1.2rem;
+        font-weight: 900;
+        color: var(--white);
+        letter-spacing: -0.03em;
+        margin-bottom: 3px;
+    }
+
+    .form-card-sub {
+        font-size: 0.82rem;
+        color: var(--text-on-dark3);
+    }
+
+    .form-body {
+        padding: 2rem;
+    }
+
+    /* Section dividers inside form */
+    .form-section-title {
+        font-family: var(--font-head);
+        font-size: 0.68rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        color: var(--leaf);
+        margin-bottom: 1rem;
+        margin-top: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-section-title::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: rgba(45, 106, 63, 0.12);
+    }
+
+    .form-section-title:first-child {
+        margin-top: 0;
+    }
+
+    /* Waste type visual selector — FIXED syntax */
+    .waste-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        margin-bottom: 0;
+    }
+
+    .waste-radio {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .waste-tile {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 14px;
+        border: 2px solid rgba(45, 106, 63, 0.15);
+        border-radius: var(--r-md);
+        cursor: pointer;
+        background: var(--fog);
+        transition: all 0.18s;
+        user-select: none;
+    }
+
+    .waste-tile:hover {
+        border-color: rgba(45, 106, 63, 0.35);
+        background: var(--mist2);
+    }
+
+    .waste-radio:checked~.waste-tile {
+        border-color: var(--leaf2);
+        background: var(--mist);
+        box-shadow: 0 0 0 3px rgba(58, 138, 82, 0.12);
+    }
+
+    .waste-tile-icon {
+        font-size: 1.4rem;
+        line-height: 1;
+        flex-shrink: 0;
+    }
+
+    .waste-tile-name {
+        font-family: var(--font-head);
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--ink2);
+        letter-spacing: -0.01em;
+    }
+
+    /* Form footer */
+    .form-footer {
+        padding: 1.25rem 2rem;
+        background: var(--fog);
+        border-top: 1px solid rgba(45, 106, 63, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .form-footer-note {
+        font-size: 0.77rem;
+        color: #7a9a7e;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .btn-submit {
+        padding: 13px 30px;
+        background: var(--leaf);
+        color: var(--white);
+        border: none;
+        border-radius: var(--r-pill);
+        font-family: var(--font-head);
+        font-size: 0.95rem;
+        font-weight: 800;
+        cursor: pointer;
+        letter-spacing: -0.01em;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-submit:hover {
+        background: var(--leaf2);
+        transform: translateY(-1px);
+        box-shadow: 0 8px 24px rgba(45, 106, 63, 0.3);
+    }
+
+    .btn-submit:active {
+        transform: scale(0.98);
+    }
+
+    /* Waste radio wrapper — needed for CSS sibling selector */
+    .waste-option {
+        position: relative;
+    }
+
+    @media (max-width: 860px) {
+        .rp-page {
+            grid-template-columns: 1fr;
+        }
+
+        .rp-left {
+            padding: 3rem 2rem;
+            min-height: unset;
+        }
+
+        .rp-right {
+            padding: 2.5rem 1.25rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .form-body {
+            padding: 1.5rem 1.25rem;
+        }
+
+        .form-footer {
+            padding: 1rem 1.25rem;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-submit {
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
+<div class="rp-page">
 
-<div class="container mt-5 mb-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-6">
-            <div class="card card-smartwaste p-4 p-md-5">
-                <p class="text-muted text-center mb-2" style="font-size: 0.9rem;">We're here to help</p>
-                <h2 class="text-center mb-2 section-title">Request a Pickup</h2>
-                <p class="text-center text-muted mb-4">Fill in the details below and we'll schedule your waste collection. It only takes a moment.</p>
+    <!-- LEFT: brand panel -->
+    <div class="rp-left">
+        <div class="rp-left-inner">
+            <div class="rp-tag">
+                <span class="rp-tag-dot"></span>
+                Pickup Request
+            </div>
+            <h1 class="rp-left-title">
+                Let us handle<br>
+                <em>the dirty work</em>
+            </h1>
+            <p class="rp-left-desc">
+                Fill in the form and the nearest available truck will be dispatched to your location automatically — no
+                phone calls needed.
+            </p>
 
-                <form method="POST">
-                    {% csrf_token %}
-
-                    <div class="mb-4">
-                        <label class="form-label">Your name</label>
-                        {{ form.name }}
+            <div class="info-list">
+                <div class="info-item">
+                    <div class="info-icon">📍</div>
+                    <div>
+                        <div class="info-text-title">Auto Geocoding</div>
+                        <div class="info-text-desc">Your address is converted to GPS coordinates via OpenRouteService
+                            automatically.</div>
                     </div>
-
-                    <div class="mb-4">
-                        <label class="form-label">Phone number</label>
-                        {{ form.phone }}
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">🗺️</div>
+                    <div>
+                        <div class="info-text-title">Nearest Truck Dispatched</div>
+                        <div class="info-text-desc">Haversine distance algorithm finds and assigns the closest available
+                            truck instantly.</div>
                     </div>
-
-                    <div class="mb-4">
-                        <label class="form-label">Pickup address</label>
-                        {{ form.address }}
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">🌿</div>
+                    <div>
+                        <div class="info-text-title">Eco-Optimised Routes</div>
+                        <div class="info-text-desc">Shortest distance routing reduces fuel consumption and carbon
+                            emissions.</div>
                     </div>
-
-                    <div class="mb-4">
-                        <label class="form-label">Waste type</label>
-                        {{ form.waste_type }}
-                    </div>
-
-                    <button class="btn btn-cta w-100 py-3" type="submit">Submit Request</button>
-                </form>
-
-                <a href="{% url 'home' %}" class="btn btn-outline-eco mt-3 w-100">Back to Home</a>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
+    <!-- RIGHT: form -->
+    <div class="rp-right">
+        <div class="rp-form-wrap">
+
+            <form method="post" action="{% url 'request_pickup' %}" class="form-card" novalidate>
+                {% csrf_token %}
+
+                <div class="form-card-header">
+                    <div class="form-card-title">New Pickup Request</div>
+                    <div class="form-card-sub">Takes less than 60 seconds</div>
+                </div>
+
+                <div class="form-body">
+
+                    <!-- Contact -->
+                    <div class="form-section-title">Your Details</div>
+                    <div class="field-row">
+                        <div class="field-group" style="margin-bottom:0">
+                            <label class="field-label" for="{{ form.name.id_for_label }}">Full Name</label>
+                            <input class="field-input" type="text" id="{{ form.name.id_for_label }}"
+                                name="{{ form.name.html_name }}" value="{{ form.name.value|default:'' }}"
+                                placeholder="Jane Mwangi" autocomplete="name" required>
+                            {% if form.name.errors %}<div class="field-error">{{ form.name.errors|join:", " }}</div>{% endif %}
+                        </div>
+                        <div class="field-group" style="margin-bottom:0">
+                            <label class="field-label" for="{{ form.phone.id_for_label }}">Phone</label>
+                            <input class="field-input" type="tel" id="{{ form.phone.id_for_label }}"
+                                name="{{ form.phone.html_name }}" value="{{ form.phone.value|default:'' }}"
+                                placeholder="+254 7XX XXX XXX" autocomplete="tel" required>
+                            {% if form.phone.errors %}<div class="field-error">{{ form.phone.errors|join:", " }}</div>{% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Address -->
+                    <div class="form-section-title">Location</div>
+                    <div class="field-group">
+                        <label class="field-label" for="{{ form.address.id_for_label }}">Street Address</label>
+                        <input class="field-input" type="text" id="{{ form.address.id_for_label }}"
+                            name="{{ form.address.html_name }}" value="{{ form.address.value|default:'' }}"
+                            placeholder="14 Kenyatta Avenue, Westlands, Nairobi" autocomplete="street-address" required>
+                        {% if form.address.errors %}<div class="field-error">{{ form.address.errors|join:", " }}</div>{% endif %}
+                        <div
+                            style="margin-top:8px; font-size:0.78rem; color:#7a9a7e; display:flex; align-items:center; gap:5px;">
+                            📍 Coordinates resolved automatically from your address
+                        </div>
+                    </div>
+
+                    <div class="form-section-title">Waste Type</div>
+                    <div class="waste-grid">
+
+                        <div class="waste-option">
+                            <input class="waste-radio" type="radio" id="wt-organic"
+                                name="{{ form.waste_type.html_name }}" value="organic"
+                                {% if form.waste_type.value == "organic" or not form.waste_type.value %}checked{% endif %}>
+                            <label class="waste-tile" for="wt-organic">
+                                <span class="waste-tile-icon">🌿</span>
+                                <span class="waste-tile-name">Organic</span>
+                            </label>
+                        </div>
+
+                        <div class="waste-option">
+                            <input class="waste-radio" type="radio" id="wt-plastic"
+                                name="{{ form.waste_type.html_name }}" value="plastic"
+                                {% if form.waste_type.value == "plastic" %}checked{% endif %}>
+                            <label class="waste-tile" for="wt-plastic">
+                                <span class="waste-tile-icon">🧴</span>
+                                <span class="waste-tile-name">Plastic</span>
+                            </label>
+                        </div>
+
+                        <div class="waste-option">
+                            <input class="waste-radio" type="radio" id="wt-ewaste"
+                                name="{{ form.waste_type.html_name }}" value="e-waste"
+                                {% if form.waste_type.value == "e-waste" %}checked{% endif %}>
+                            <label class="waste-tile" for="wt-ewaste">
+                                <span class="waste-tile-icon">🖥️</span>
+                                <span class="waste-tile-name">E-Waste</span>
+                            </label>
+                        </div>
+
+                        <div class="waste-option">
+                            <input class="waste-radio" type="radio" id="wt-mixed" name="{{ form.waste_type.html_name }}"
+                                value="mixed" {% if form.waste_type.value == "mixed" %}checked{% endif %}>
+                            <label class="waste-tile" for="wt-mixed">
+                                <span class="waste-tile-icon">🗑️</span>
+                                <span class="waste-tile-name">Mixed</span>
+                            </label>
+                        </div>
+
+                    </div>
+                    {% if form.waste_type.errors %}<div class="field-error" style="margin-top:8px">{{ form.waste_type.errors|join:", " }}</div>{% endif %}
+
+                    {% if form.non_field_errors %}
+                    <div class="field-error" style="margin-top:1rem">{{ form.non_field_errors|join:", " }}</div>
+                    {% endif %}
+
+                </div><!-- /form-body -->
+
+                <div class="form-footer">
+                    <div class="form-footer-note">🔒 Nearest truck auto-assigned on submit</div>
+                    <button type="submit" class="btn-submit">
+                        🚛 Dispatch Truck
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
 {% endblock %}

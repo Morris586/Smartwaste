@@ -1,8 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import user_passes_test
 from .forms import WastePickupForm
 from .services.assignment import assign_truck_to_pickup
 from .models import WastePickupRequest
 from .services.pickup_service import handle_new_pickup, mark_pickup_collected
+
+
+def is_staff_user(user):
+    return user.is_authenticated and user.is_staff
 
 
 def request_pickup(request):
@@ -18,10 +23,13 @@ def request_pickup(request):
             form = WastePickupForm()
     return render(request, 'pickups/request_pickup.html', {'form': form})
 
+@user_passes_test(is_staff_user)
 def assigned_pickups(request):
-    pickups=WastePickupRequest.objects.filter(status='assigned').select_related('assigned_truck')
+    pickups = WastePickupRequest.objects.filter(status='assigned').select_related('assigned_truck')
     return render(request, "pickups/assigned_pickups.html", {'pickups': pickups})
 
+
+@user_passes_test(is_staff_user)
 def mark_as_collected(request, pickup_id):
      pickup = get_object_or_404(WastePickupRequest, id=pickup_id)
      mark_pickup_collected(pickup)

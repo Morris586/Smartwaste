@@ -1,48 +1,537 @@
 {% extends "base.html" %}
+{% block title %}Assigned Pickups — SmartWaste{% endblock %}
+{% block nav_assigned %}active{% endblock %}
+
+{% block extra_head %}
+<style>
+    .ap-wrap {
+        max-width: 1160px;
+        margin: 0 auto;
+        padding: 3rem 2rem 5rem;
+    }
+
+    /* ── PAGE HEADER ── */
+    .ap-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .ap-title-block {}
+
+    .ap-eyebrow {
+        font-family: var(--font-head);
+        font-size: 0.72rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--leaf2);
+        margin-bottom: 0.5rem;
+    }
+
+    .ap-title {
+        font-family: var(--font-head);
+        font-size: clamp(1.8rem, 4vw, 2.6rem);
+        font-weight: 900;
+        letter-spacing: -0.04em;
+        color: var(--ink);
+        line-height: 1.05;
+    }
+
+    /* ── STAT CARDS ── */
+    .stat-strip {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .sc {
+        background: var(--white);
+        border: 1px solid rgba(45, 106, 63, 0.10);
+        border-radius: var(--r-xl);
+        padding: 1.5rem 1.25rem;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.22s;
+    }
+
+    .sc:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 16px 40px rgba(45, 106, 63, 0.10);
+    }
+
+    .sc-accent {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        border-radius: 4px 4px 0 0;
+    }
+
+    .sc-blue .sc-accent {
+        background: linear-gradient(90deg, #3b7ff6, #6da4ff);
+    }
+
+    .sc-green .sc-accent {
+        background: linear-gradient(90deg, var(--leaf), var(--lime));
+    }
+
+    .sc-amber .sc-accent {
+        background: linear-gradient(90deg, #e9a825, #f5c84a);
+    }
+
+    .sc-bark .sc-accent {
+        background: linear-gradient(90deg, #8a6a2a, #c9a855);
+    }
+
+    .sc-icon {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    .sc-val {
+        font-family: var(--font-head);
+        font-size: 2.4rem;
+        font-weight: 900;
+        letter-spacing: -0.05em;
+        line-height: 1;
+        color: var(--ink);
+        margin-bottom: 4px;
+    }
+
+    .sc-label {
+        font-size: 0.75rem;
+        color: #7a9a7e;
+        font-weight: 500;
+    }
+
+    /* ── TABLE CARD ── */
+    .table-shell {
+        background: var(--white);
+        border: 1px solid rgba(45, 106, 63, 0.10);
+        border-radius: var(--r-xl);
+        overflow: hidden;
+        box-shadow: 0 4px 24px rgba(45, 106, 63, 0.06);
+    }
+
+    .table-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding: 1.25rem 1.75rem;
+        background: var(--ink);
+        border-bottom: 1px solid rgba(168, 224, 99, 0.08);
+    }
+
+    .table-topbar-title {
+        font-family: var(--font-head);
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: var(--white);
+        letter-spacing: -0.02em;
+    }
+
+    .record-count {
+        font-size: 0.75rem;
+        color: var(--text-on-dark3);
+        background: rgba(168, 224, 99, 0.07);
+        border: 1px solid rgba(168, 224, 99, 0.1);
+        border-radius: var(--r-pill);
+        padding: 4px 12px;
+    }
+
+    /* Table */
+    .ptable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .ptable th {
+        padding: 11px 16px;
+        text-align: left;
+        font-family: var(--font-head);
+        font-size: 0.67rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        color: #7a9a7e;
+        background: #f9fcf9;
+        border-bottom: 1px solid rgba(45, 106, 63, 0.08);
+        white-space: nowrap;
+    }
+
+    .ptable td {
+        padding: 14px 16px;
+        border-bottom: 1px solid rgba(45, 106, 63, 0.06);
+        color: var(--ink2);
+        vertical-align: middle;
+        font-size: 0.875rem;
+    }
+
+    .ptable tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .ptable tbody tr {
+        transition: background 0.12s;
+    }
+
+    .ptable tbody tr:hover td {
+        background: #f7fdf8;
+    }
+
+    /* Cell styles */
+    .cell-id {
+        font-family: 'Courier New', monospace;
+        font-size: 0.75rem;
+        color: #9ab09e;
+        letter-spacing: 0.03em;
+    }
+
+    .cell-name {
+        font-family: var(--font-head);
+        font-weight: 700;
+        color: var(--ink);
+        font-size: 0.9rem;
+    }
+
+    .cell-phone {
+        font-size: 0.77rem;
+        color: #7a9a7e;
+        margin-top: 2px;
+    }
+
+    .cell-addr {
+        max-width: 170px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 0.82rem;
+    }
+
+    .truck-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--fog);
+        border: 1px solid rgba(45, 106, 63, 0.12);
+        border-radius: var(--r-md);
+        padding: 4px 10px;
+        font-family: var(--font-head);
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--ink2);
+        white-space: nowrap;
+    }
+
+    .driver-sub {
+        font-size: 0.72rem;
+        color: #7a9a7e;
+        margin-top: 4px;
+        padding-left: 2px;
+    }
+
+    .no-truck {
+        font-size: 0.78rem;
+        color: #bbb;
+        font-style: italic;
+    }
+
+    .cell-time {
+        font-size: 0.78rem;
+        color: #7a9a7e;
+        line-height: 1.6;
+    }
+
+    .waste-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.82rem;
+        color: var(--ink2);
+        white-space: nowrap;
+    }
+
+    /* Mark collected button */
+    .btn-collect {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 16px;
+        border-radius: var(--r-pill);
+        border: 2px solid rgba(45, 106, 63, 0.25);
+        background: transparent;
+        color: var(--leaf2);
+        font-family: var(--font-head);
+        font-size: 0.78rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.18s;
+        white-space: nowrap;
+        letter-spacing: -0.01em;
+    }
+
+    .btn-collect:hover {
+        background: var(--leaf);
+        color: var(--white);
+        border-color: var(--leaf);
+        box-shadow: 0 4px 14px rgba(45, 106, 63, 0.25);
+    }
+
+    /* Mobile cards */
+    .mobile-view {
+        display: none;
+    }
+
+    .mcard {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid rgba(45, 106, 63, 0.07);
+    }
+
+    .mcard:last-child {
+        border-bottom: none;
+    }
+
+    .mcard-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-bottom: 8px;
+    }
+
+    .mcard-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        font-size: 0.8rem;
+        color: #7a9a7e;
+        margin-bottom: 12px;
+    }
+
+    .mcard-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    @media (max-width: 860px) {
+        .stat-strip {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @media (max-width: 700px) {
+        .ptable {
+            display: none;
+        }
+
+        .mobile-view {
+            display: block;
+        }
+
+        .ap-wrap {
+            padding: 2rem 1rem 4rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .stat-strip {
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
+<div class="ap-wrap">
 
-<div class="container mt-4 mb-5">
-    <h2 class="mb-2 section-title">Assigned Pickups</h2>
-    <p class="text-muted mb-4">Your scheduled waste collections. Mark as collected when done.</p>
+    <!-- Header -->
+    <div class="ap-header">
+        <div class="ap-title-block">
+            <div class="ap-eyebrow">Operations</div>
+            <h1 class="ap-title">Assigned Pickups</h1>
+        </div>
+        <a href="{% url 'request_pickup' %}" class="btn btn-lime">
+            <svg viewBox="0 0 24 24">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            New Request
+        </a>
+    </div>
 
-    <div class="card card-smartwaste overflow-hidden">
-        <div class="table-responsive">
-            <table class="table table-smartwaste mb-0">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Phone</th>
-                        <th>Address</th>
-                        <th>Waste Type</th>
-                        <th>Truck</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for pickup in pickups %}
-                    <tr>
-                        <td>{{ pickup.name }}</td>
-                        <td>{{ pickup.phone }}</td>
-                        <td>{{ pickup.address }}</td>
-                        <td>{{ pickup.waste_type }}</td>
-                        <td>{{ pickup.assigned_truck.name }}</td>
-                        <td>
-                            <span class="status-badge status-assigned">{{ pickup.status }}</span>
-                        </td>
-                        <td>
-                            <a href="{% url 'mark_as_collected' pickup.id %}" class="btn btn-smartwaste btn-sm">Mark as Collected</a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="7" class="text-center text-muted py-5">No assigned pickups at the moment.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <!-- Stats -->
+    <div class="stat-strip">
+        <div class="sc sc-blue">
+            <div class="sc-accent"></div>
+            <span class="sc-icon">🚛</span>
+            <div class="sc-val">{{ pickups|length }}</div>
+            <div class="sc-label">Active Assignments</div>
+        </div>
+        <div class="sc sc-amber">
+            <div class="sc-accent"></div>
+            <span class="sc-icon">⏳</span>
+            <div class="sc-val">{{ pickups|length }}</div>
+            <div class="sc-label">Awaiting Collection</div>
+        </div>
+        <div class="sc sc-green">
+            <div class="sc-accent"></div>
+            <span class="sc-icon">⚡</span>
+            <div class="sc-val">Auto</div>
+            <div class="sc-label">Assignment Mode</div>
+        </div>
+        <div class="sc sc-bark">
+            <div class="sc-accent"></div>
+            <span class="sc-icon">🌍</span>
+            <div class="sc-val">ORS</div>
+            <div class="sc-label">Geocoding Engine</div>
         </div>
     </div>
-</div>
 
+    <!-- Table -->
+    <div class="table-shell">
+        <div class="table-topbar">
+            <div class="table-topbar-title">🚛 Active Assignments</div>
+            <span class="record-count">{{ pickups|length }} record{{ pickups|length|pluralize }}</span>
+        </div>
+
+        {% if pickups %}
+
+        <!-- Desktop table -->
+        <table class="ptable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Resident</th>
+                    <th>Address</th>
+                    <th>Waste Type</th>
+                    <th>Assigned Truck</th>
+                    <th>Status</th>
+                    <th>Requested</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pickup in pickups %}
+                <tr>
+                    <td><span class="cell-id">#{{ pickup.id|stringformat:"04d" }}</span></td>
+
+                    <td>
+                        <div class="cell-name">{{ pickup.name }}</div>
+                        <div class="cell-phone">{{ pickup.phone }}</div>
+                    </td>
+
+                    <td>
+                        <span class="cell-addr" title="{{ pickup.address }}">{{ pickup.address }}</span>
+                    </td>
+
+                    <td>
+                        <span class="waste-label">
+                            {% if pickup.waste_type == "organic" %}🌿 Organic
+                            {% elif pickup.waste_type == "plastic" %}🧴 Plastic
+                            {% elif pickup.waste_type == "e-waste" %}🖥️ E-Waste
+                            {% else %}🗑️ Mixed
+                            {% endif %}
+                        </span>
+                    </td>
+
+                    <td>
+                        {% if pickup.assigned_truck %}
+                        <div>
+                            <span class="truck-pill">🚛 {{ pickup.assigned_truck.name }}</span>
+                            {% if pickup.assigned_truck.driver %}
+                            <div class="driver-sub">
+                                👤 {{ pickup.assigned_truck.driver.name }}
+                                &nbsp;
+                                <span class="badge badge-{{ pickup.assigned_truck.driver.status }}">{{
+                                    pickup.assigned_truck.driver.get_status_display }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% else %}
+                        <span class="no-truck">Unassigned</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <span class="badge badge-{{ pickup.status }}">{{ pickup.get_status_display }}</span>
+                    </td>
+
+                    <td>
+                        <div class="cell-time">
+                            {{ pickup.request_time|date:"d M Y" }}<br>
+                            <span style="color:#bbb">{{ pickup.request_time|time:"H:i" }}</span>
+                        </div>
+                    </td>
+
+                    <td>
+                        <form method="post" action="{% url 'mark_as_collected' pickup.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-collect">✓ Collected</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Mobile view -->
+        <div class="mobile-view">
+            {% for pickup in pickups %}
+            <div class="mcard">
+                <div class="mcard-top">
+                    <div>
+                        <div class="cell-name">{{ pickup.name }}</div>
+                        <div class="cell-phone">{{ pickup.phone }}</div>
+                    </div>
+                    <span class="badge badge-{{ pickup.status }}">{{ pickup.get_status_display }}</span>
+                </div>
+                <div class="mcard-meta">
+                    <span>📍 {{ pickup.address }}</span>
+                    <span>
+                        {% if pickup.waste_type == "organic" %}🌿 Organic
+                        {% elif pickup.waste_type == "plastic" %}🧴 Plastic
+                        {% elif pickup.waste_type == "e-waste" %}🖥️ E-Waste
+                        {% else %}🗑️ Mixed
+                        {% endif %}
+                    </span>
+                    {% if pickup.assigned_truck %}
+                    <span>🚛 {{ pickup.assigned_truck.name }}{% if pickup.assigned_truck.driver %} — {{
+                        pickup.assigned_truck.driver.name }}{% endif %}</span>
+                    {% endif %}
+                </div>
+                <div class="mcard-bottom">
+                    <span style="font-size:0.72rem;color:#9ab09e">{{ pickup.request_time|date:"d M Y, H:i" }}</span>
+                    <form method="post" action="{% url 'mark_as_collected' pickup.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-collect">✓ Collected</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% else %}
+        <div class="empty">
+            <span class="empty-icon">🚛</span>
+            <div class="empty-title">No assigned pickups right now</div>
+            <div class="empty-sub">Submit a request and the nearest truck will be assigned automatically.</div>
+            <a href="{% url 'request_pickup' %}" class="btn btn-lime">+ Create First Request</a>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
 {% endblock %}

@@ -1,55 +1,550 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}SmartWaste{% endblock %} | Waste Collection & Routing</title>
+    <title>{% block title %}SmartWaste{% endblock %}</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&family=Satoshi:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0a0f0b;
+            --ink2: #141a15;
+            --ink3: #1e2820;
+            --leaf: #2d6a3f;
+            --leaf2: #3a8a52;
+            --leaf3: #4caf6e;
+            --lime: #a8e063;
+            --lime2: #c5f080;
+            --mist: #e8f5e0;
+            --mist2: #f2fbea;
+            --bark: #5c4a2a;
+            --sand: #d4c9a8;
+            --white: #ffffff;
+            --fog: #f7faf3;
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'home/css/theme.css' %}">
+            --text-on-dark: #e2eed8;
+            --text-on-dark2: #a8c498;
+            --text-on-dark3: #6a8f72;
+
+            --font-head: 'Cabinet Grotesk', sans-serif;
+            --font-body: 'Satoshi', sans-serif;
+
+            --r-sm: 6px;
+            --r-md: 14px;
+            --r-lg: 20px;
+            --r-xl: 32px;
+            --r-pill: 9999px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--fog);
+            color: var(--ink);
+            line-height: 1.65;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ══════════════════════════════════════
+   NAVBAR
+══════════════════════════════════════ */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            padding: 0 2.5rem;
+            background: rgba(10, 15, 11, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(168, 224, 99, 0.08);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+
+        .nav-logo-badge {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--leaf), var(--leaf3));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 0 0 1px rgba(168, 224, 99, 0.2), 0 4px 12px rgba(45, 106, 63, 0.4);
+        }
+
+        .nav-logo-text {
+            font-family: var(--font-head);
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: var(--white);
+            letter-spacing: -0.03em;
+        }
+
+        .nav-logo-text span {
+            color: var(--lime);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            margin-left: auto;
+        }
+
+        .nav-link {
+            padding: 7px 16px;
+            border-radius: var(--r-pill);
+            font-family: var(--font-body);
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-on-dark2);
+            text-decoration: none;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            letter-spacing: 0.01em;
+        }
+
+        .nav-link:hover {
+            color: var(--lime);
+            background: rgba(168, 224, 99, 0.07);
+        }
+
+        .nav-link.active {
+            color: var(--ink);
+            background: var(--lime);
+            font-weight: 700;
+        }
+
+        /* ══════════════════════════════════════
+   PAGE OFFSET (for fixed nav)
+══════════════════════════════════════ */
+        main {
+            padding-top: 64px;
+            min-height: 100vh;
+        }
+
+        /* ══════════════════════════════════════
+   GLOBAL BUTTONS
+══════════════════════════════════════ */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 24px;
+            border-radius: var(--r-pill);
+            font-family: var(--font-head);
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+            letter-spacing: -0.01em;
+            white-space: nowrap;
+        }
+
+        .btn svg {
+            width: 15px;
+            height: 15px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            flex-shrink: 0;
+        }
+
+        .btn-lime {
+            background: var(--lime);
+            color: var(--ink);
+            border-color: var(--lime);
+        }
+
+        .btn-lime:hover {
+            background: var(--lime2);
+            border-color: var(--lime2);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(168, 224, 99, 0.35);
+        }
+
+        .btn-dark {
+            background: var(--ink2);
+            color: var(--text-on-dark);
+            border-color: rgba(168, 224, 99, 0.15);
+        }
+
+        .btn-dark:hover {
+            border-color: rgba(168, 224, 99, 0.35);
+            color: var(--lime);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--leaf2);
+            border-color: rgba(58, 138, 82, 0.3);
+        }
+
+        .btn-ghost:hover {
+            background: rgba(58, 138, 82, 0.08);
+            border-color: var(--leaf2);
+        }
+
+        .btn-sm {
+            padding: 7px 16px;
+            font-size: 0.8rem;
+        }
+
+        /* ══════════════════════════════════════
+   FORM ELEMENTS
+══════════════════════════════════════ */
+        .field-label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--leaf);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .field-input,
+        .field-select,
+        .field-textarea {
+            width: 100%;
+            padding: 13px 16px;
+            background: var(--white);
+            border: 2px solid rgba(45, 106, 63, 0.15);
+            border-radius: var(--r-md);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            color: var(--ink);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .field-input:focus,
+        .field-select:focus,
+        .field-textarea:focus {
+            border-color: var(--leaf2);
+            box-shadow: 0 0 0 4px rgba(58, 138, 82, 0.12);
+        }
+
+        .field-input::placeholder,
+        .field-textarea::placeholder {
+            color: #9ab09e;
+        }
+
+        .field-select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%233a8a52' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 40px;
+            cursor: pointer;
+        }
+
+        .field-textarea {
+            resize: vertical;
+            min-height: 90px;
+            line-height: 1.6;
+        }
+
+        .field-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+        }
+
+        .field-error {
+            margin-top: 6px;
+            padding: 8px 12px;
+            background: #fff0f0;
+            border: 1px solid #ffc5c5;
+            border-radius: var(--r-sm);
+            font-size: 0.8rem;
+            color: #c0392b;
+        }
+
+        /* ══════════════════════════════════════
+   BADGES
+══════════════════════════════════════ */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 12px;
+            border-radius: var(--r-pill);
+            font-family: var(--font-head);
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .badge-pending {
+            background: #fff8e6;
+            color: #92650a;
+            border: 1px solid #f5d98a;
+        }
+
+        .badge-pending::before {
+            background: #e9a825;
+        }
+
+        .badge-assigned {
+            background: #e8f0fe;
+            color: #1a56db;
+            border: 1px solid #b4cafe;
+        }
+
+        .badge-assigned::before {
+            background: #3b7ff6;
+        }
+
+        .badge-collected {
+            background: #eafaf1;
+            color: #1a7a42;
+            border: 1px solid #a3e4bc;
+        }
+
+        .badge-collected::before {
+            background: #27ae60;
+        }
+
+        .badge-completed {
+            background: #f0fdf4;
+            color: #14532d;
+            border: 1px solid #86efac;
+        }
+
+        .badge-completed::before {
+            background: #22c55e;
+        }
+
+        .badge-available {
+            background: #eafaf1;
+            color: #1a7a42;
+            border: 1px solid #a3e4bc;
+        }
+
+        .badge-available::before {
+            background: #27ae60;
+        }
+
+        .badge-en_route {
+            background: #e8f0fe;
+            color: #1a56db;
+            border: 1px solid #b4cafe;
+        }
+
+        .badge-en_route::before {
+            background: #3b7ff6;
+        }
+
+        .badge-off_duty {
+            background: #f5f5f5;
+            color: #555;
+            border: 1px solid #ddd;
+        }
+
+        .badge-off_duty::before {
+            background: #999;
+        }
+
+        /* ══════════════════════════════════════
+   MESSAGES
+══════════════════════════════════════ */
+        .messages {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 1rem 2rem 0;
+        }
+
+        .msg {
+            padding: 12px 18px;
+            border-radius: var(--r-md);
+            font-size: 0.875rem;
+            margin-bottom: 8px;
+            border: 1px solid;
+            font-family: var(--font-body);
+        }
+
+        .msg-success {
+            background: #eafaf1;
+            border-color: #a3e4bc;
+            color: #1a7a42;
+        }
+
+        .msg-error {
+            background: #fff0f0;
+            border-color: #ffc5c5;
+            color: #c0392b;
+        }
+
+        .msg-info {
+            background: #e8f0fe;
+            border-color: #b4cafe;
+            color: #1a56db;
+        }
+
+        /* ══════════════════════════════════════
+   EMPTY STATE
+══════════════════════════════════════ */
+        .empty {
+            text-align: center;
+            padding: 5rem 2rem;
+        }
+
+        .empty-icon {
+            font-size: 3.5rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .empty-title {
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--ink3);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .empty-sub {
+            font-size: 0.875rem;
+            color: #7a9a7e;
+            margin-bottom: 2rem;
+        }
+
+        /* ══════════════════════════════════════
+   ANIMATIONS
+══════════════════════════════════════ */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .anim-1 {
+            animation: fadeUp 0.5s ease both;
+        }
+
+        .anim-2 {
+            animation: fadeUp 0.5s 0.1s ease both;
+        }
+
+        .anim-3 {
+            animation: fadeUp 0.5s 0.2s ease both;
+        }
+
+        .anim-4 {
+            animation: fadeUp 0.5s 0.3s ease both;
+        }
+
+        @media (max-width: 720px) {
+            .nav {
+                padding: 0 1.25rem;
+            }
+
+            .field-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    {# Home page used extra_css; other pages use extra_head — include both so styles are never dropped #}
     {% block extra_css %}{% endblock %}
+    {% block extra_head %}{% endblock %}
 </head>
 
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-smartwaste">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}">SmartWaste</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'pickups_home' %}">Pickups</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/dashboard/">Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/">Admin</a>
-                    </li>
-                </ul>
-            </div>
+    <nav class="nav">
+        <a class="nav-logo" href="/">
+            <div class="nav-logo-badge">🌿</div>
+            <span class="nav-logo-text">Smart<span>Waste</span></span>
+        </a>
+        <div class="nav-links">
+            <a href="/" class="nav-link {% block nav_home %}{% endblock %}">Home</a>
+            <a href="{% url 'request_pickup' %}" class="nav-link {% block nav_request %}{% endblock %}">Request
+                Pickup</a>
+            {% if user.is_staff %}
+            <a href="{% url 'assigned_pickups' %}" class="nav-link {% block nav_assigned %}{% endblock %}">Assigned</a>
+            {% endif %}
+            <a href="/admin/" class="nav-link {% block nav_admin %}{% endblock %}">Admin</a>
         </div>
     </nav>
 
     <main>
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="msg msg-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="footer-smartwaste py-4 mt-5">
-        <div class="container text-center">
-            <p class="mb-0">© 2025 SmartWaste — Caring for a cleaner environment together</p>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_scripts %}{% endblock %}
 </body>
 
 </html>

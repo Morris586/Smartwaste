@@ -1,101 +1,590 @@
 {% extends "base.html" %}
+{% block title %}Dashboard — SmartWaste{% endblock %}
+{% block nav_admin %}active{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* ── DASHBOARD HERO BAND ── */
+    .dash-hero {
+        background: var(--ink);
+        padding: 3.5rem 2.5rem 2.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dash-hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+            radial-gradient(ellipse 55% 80% at 100% 50%, rgba(45, 106, 63, 0.18) 0%, transparent 55%),
+            radial-gradient(ellipse 30% 50% at 0% 100%, rgba(76, 175, 110, 0.10) 0%, transparent 50%);
+    }
+
+    .dash-hero::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+            linear-gradient(rgba(168, 224, 99, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(168, 224, 99, 0.03) 1px, transparent 1px);
+        background-size: 40px 40px;
+    }
+
+    .dash-hero-inner {
+        max-width: 1160px;
+        margin: 0 auto;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .dash-hero-title {
+        font-family: var(--font-head);
+        font-size: clamp(1.8rem, 4vw, 2.8rem);
+        font-weight: 900;
+        letter-spacing: -0.04em;
+        color: var(--white);
+        line-height: 1.05;
+        margin-bottom: 0.4rem;
+    }
+
+    .dash-hero-title span {
+        color: var(--lime);
+    }
+
+    .dash-hero-sub {
+        font-size: 0.9rem;
+        color: var(--text-on-dark3);
+    }
+
+    .dash-hero-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    /* ── CONTENT WRAP ── */
+    .dash-wrap {
+        max-width: 1160px;
+        margin: 0 auto;
+        padding: 2.5rem 2.5rem 5rem;
+    }
+
+    /* ── SECTION HEADERS ── */
+    .section-bar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 1.25rem;
+        margin-top: 2.75rem;
+    }
+
+    .section-bar:first-child {
+        margin-top: 0;
+    }
+
+    .section-bar-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        flex-shrink: 0;
+    }
+
+    .sbi-green {
+        background: rgba(45, 106, 63, 0.12);
+    }
+
+    .sbi-blue {
+        background: rgba(59, 127, 246, 0.10);
+    }
+
+    .sbi-amber {
+        background: rgba(233, 168, 37, 0.12);
+    }
+
+    .sbi-red {
+        background: rgba(220, 38, 38, 0.08);
+    }
+
+    .section-bar-title {
+        font-family: var(--font-head);
+        font-size: 0.72rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        color: var(--leaf2);
+    }
+
+    .section-bar-line {
+        flex: 1;
+        height: 1px;
+        background: rgba(45, 106, 63, 0.10);
+    }
+
+    /* ── METRIC GRIDS ── */
+    .mg4 {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+    }
+
+    .mg3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+    }
+
+    .mc {
+        background: var(--white);
+        border: 1px solid rgba(45, 106, 63, 0.08);
+        border-radius: var(--r-xl);
+        padding: 1.5rem 1.25rem;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.22s;
+        cursor: default;
+    }
+
+    .mc:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 50px rgba(45, 106, 63, 0.10);
+        border-color: rgba(45, 106, 63, 0.2);
+    }
+
+    .mc-bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        border-radius: 4px 4px 0 0;
+    }
+
+    .mc-total .mc-bar {
+        background: linear-gradient(90deg, var(--leaf), var(--lime));
+    }
+
+    .mc-pending .mc-bar {
+        background: linear-gradient(90deg, #e9a825, #f5c84a);
+    }
+
+    .mc-assigned .mc-bar {
+        background: linear-gradient(90deg, #3b7ff6, #6da4ff);
+    }
+
+    .mc-completed .mc-bar {
+        background: linear-gradient(90deg, #22c55e, #6ee98a);
+    }
+
+    .mc-avail .mc-bar {
+        background: linear-gradient(90deg, var(--leaf), var(--lime));
+    }
+
+    .mc-enroute .mc-bar {
+        background: linear-gradient(90deg, #3b7ff6, #6da4ff);
+    }
+
+    .mc-offduty .mc-bar {
+        background: linear-gradient(90deg, #9ca3af, #d1d5db);
+    }
+
+    .mc-ttruck .mc-bar {
+        background: linear-gradient(90deg, var(--leaf), var(--lime));
+    }
+
+    .mc-atruck .mc-bar {
+        background: linear-gradient(90deg, #22c55e, #6ee98a);
+    }
+
+    .mc-btruck .mc-bar {
+        background: linear-gradient(90deg, #e9a825, #f5c84a);
+    }
+
+    .mc-icon {
+        font-size: 1.6rem;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    .mc-val {
+        font-family: var(--font-head);
+        font-size: 2.4rem;
+        font-weight: 900;
+        letter-spacing: -0.05em;
+        line-height: 1;
+        color: var(--ink);
+        margin-bottom: 5px;
+    }
+
+    .mc-label {
+        font-size: 0.74rem;
+        color: #7a9a7e;
+        font-weight: 500;
+    }
+
+    /* ── HEALTH CARD ── */
+    .health-card {
+        background: var(--white);
+        border: 1px solid rgba(45, 106, 63, 0.08);
+        border-radius: var(--r-xl);
+        overflow: hidden;
+        box-shadow: 0 4px 24px rgba(45, 106, 63, 0.05);
+    }
+
+    .health-card-head {
+        padding: 1.25rem 1.75rem;
+        background: var(--fog);
+        border-bottom: 1px solid rgba(45, 106, 63, 0.08);
+        font-family: var(--font-head);
+        font-size: 0.78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--leaf2);
+    }
+
+    .health-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding: 1.25rem 1.75rem;
+        border-bottom: 1px solid rgba(45, 106, 63, 0.06);
+    }
+
+    .health-row:last-child {
+        border-bottom: none;
+    }
+
+    .health-lhs {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .health-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+
+    .health-name {
+        font-family: var(--font-head);
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--ink);
+        letter-spacing: -0.01em;
+    }
+
+    .health-desc {
+        font-size: 0.77rem;
+        color: #7a9a7e;
+        margin-top: 2px;
+    }
+
+    .health-rhs {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .health-num {
+        font-family: var(--font-head);
+        font-size: 1.5rem;
+        font-weight: 900;
+        letter-spacing: -0.04em;
+    }
+
+    .hn-ok {
+        color: var(--leaf2);
+    }
+
+    .hn-warn {
+        color: #b45309;
+    }
+
+    .hn-danger {
+        color: #dc2626;
+    }
+
+    .hpill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 14px;
+        border-radius: var(--r-pill);
+        font-family: var(--font-head);
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+    }
+
+    .hpill::before {
+        content: '';
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+    }
+
+    .hpill-ok {
+        background: #eafaf1;
+        color: #1a7a42;
+        border: 1px solid #a3e4bc;
+    }
+
+    .hpill-ok::before {
+        background: #27ae60;
+    }
+
+    .hpill-danger {
+        background: #fff0f0;
+        color: #c0392b;
+        border: 1px solid #ffc5c5;
+    }
+
+    .hpill-danger::before {
+        background: #e74c3c;
+    }
+
+    /* ── QUICK ACTIONS ── */
+    .qactions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding: 2rem 0 0;
+        border-top: 1px solid rgba(45, 106, 63, 0.08);
+        margin-top: 2.5rem;
+    }
+
+    @media (max-width: 960px) {
+        .mg4 {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @media (max-width: 680px) {
+        .mg3 {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .dash-wrap {
+            padding: 2rem 1rem 4rem;
+        }
+
+        .dash-hero {
+            padding: 2.5rem 1.25rem 2rem;
+        }
+    }
+
+    @media (max-width: 420px) {
+
+        .mg4,
+        .mg3 {
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 
-<div class="container mt-4 mb-5">
-    <h1 class="text-center mb-5 section-title">Operations Dashboard</h1>
-    <p class="text-center text-muted mb-5">Real-time overview of your waste collection service</p>
-
-    <!-- PICKUP METRICS -->
-    <h3 class="mb-3 section-title">Pickup Metrics</h3>
-    <div class="row g-3 mb-4">
-        <div class="col-md-3">
-            <div class="card metric-card metric-total p-4 text-center">
-                <h6>Total Pickups</h6>
-                <h2 class="mb-0 mt-2">{{ total_pickups }}</h2>
-            </div>
+<!-- Hero band -->
+<div class="dash-hero">
+    <div class="dash-hero-inner">
+        <div>
+            <div class="dash-hero-title">Operations <span>Dashboard</span></div>
+            <div class="dash-hero-sub">Real-time overview of your waste collection service</div>
         </div>
-        <div class="col-md-3">
-            <div class="card metric-card metric-pending p-4 text-center">
-                <h6>Pending</h6>
-                <h2 class="mb-0 mt-2">{{ pending_pickups }}</h2>
-            </div>
+        <div class="dash-hero-actions">
+            <a href="{% url 'request_pickup' %}" class="btn btn-lime btn-sm">+ New Pickup</a>
+            <a href="{% url 'assigned_pickups' %}" class="btn btn-dark btn-sm">View Assigned</a>
         </div>
-        <div class="col-md-3">
-            <div class="card metric-card metric-assigned p-4 text-center">
-                <h6>Assigned</h6>
-                <h2 class="mb-0 mt-2">{{ assigned_pickups }}</h2>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card metric-card metric-completed p-4 text-center">
-                <h6>Completed</h6>
-                <h2 class="mb-0 mt-2">{{ completed_pickups }}</h2>
-            </div>
-        </div>
-    </div>
-
-    <!-- DRIVER METRICS -->
-    <h3 class="mt-5 mb-3 section-title">Driver Metrics</h3>
-    <div class="row g-3 mb-4">
-        <div class="col-md-4">
-            <div class="card metric-card metric-available p-4 text-center">
-                <h6>Available Drivers</h6>
-                <h2 class="mb-0 mt-2">{{ available_drivers }}</h2>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card metric-card metric-enroute p-4 text-center">
-                <h6>En-Route Drivers</h6>
-                <h2 class="mb-0 mt-2">{{ en_route_drivers }}</h2>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card metric-card metric-offduty p-4 text-center">
-                <h6>Off Duty</h6>
-                <h2 class="mb-0 mt-2">{{ off_duty_drivers }}</h2>
-            </div>
-        </div>
-    </div>
-
-    <!-- TRUCK METRICS -->
-    <h3 class="mt-5 mb-3 section-title">Truck Metrics</h3>
-    <div class="row g-3 mb-4">
-        <div class="col-md-4">
-            <div class="card metric-card metric-trucks-total p-4 text-center">
-                <h6>Total Trucks</h6>
-                <h2 class="mb-0 mt-2">{{ total_trucks }}</h2>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card metric-card metric-trucks-avail p-4 text-center">
-                <h6>Available Trucks</h6>
-                <h2 class="mb-0 mt-2">{{ available_trucks }}</h2>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card metric-card metric-trucks-busy p-4 text-center">
-                <h6>Busy Trucks</h6>
-                <h2 class="mb-0 mt-2">{{ busy_trucks }}</h2>
-            </div>
-        </div>
-    </div>
-
-    <!-- SYSTEM HEALTH -->
-    <h3 class="mt-5 mb-3 section-title">System Health</h3>
-    <div class="card card-smartwaste p-4">
-        <p class="mb-2">
-            <strong>Stuck Pickups (Assigned > 2hrs):</strong>
-            <span class="text-danger">{{ stuck_pickups }}</span>
-        </p>
-        <p class="mb-0">
-            <strong>Idle Dispatch Detected:</strong>
-            {% if idle_dispatch %}
-            <span class="text-danger">YES</span>
-            {% else %}
-            <span class="text-success">NO</span>
-            {% endif %}
-        </p>
     </div>
 </div>
 
+<div class="dash-wrap">
+
+    <!-- ── PICKUP METRICS ── -->
+    <div class="section-bar">
+        <div class="section-bar-icon sbi-green">♻️</div>
+        <div class="section-bar-title">Pickup Metrics</div>
+        <div class="section-bar-line"></div>
+    </div>
+    <div class="mg4">
+        <div class="mc mc-total">
+            <div class="mc-bar"></div>
+            <span class="mc-icon">📦</span>
+            <div class="mc-val">{{ total_pickups }}</div>
+            <div class="mc-label">Total Pickups</div>
+        </div>
+        <div class="mc mc-pending">
+            <div class="mc-bar"></div>
+            <span class="mc-icon">⏳</span>
+            <div class="mc-val">{{ pending_pickups }}</div>
+            <div class="mc-label">Pending</div>
+        </div>
+        <div class="mc mc-assigned">
+            <div class="mc-bar"></div>
+            <span class="mc-icon">🚛</span>
+            <div class="mc-val">{{ assigned_pickups }}</div>
+            <div class="mc-label">Assigned</div>
+        </div>
+        <div class="mc mc-completed">
+            <div class="mc-bar"></div>
+            <span class="mc-icon">✅</span>
+            <div class="mc-val">{{ completed_pickups }}</div>
+            <div class="mc-label">Completed</div>
+        </div>
+    </div>
+
+    <!-- ── DRIVER METRICS ── -->
+    <div class="section-bar">
+        <div class="section-bar-icon sbi-blue">👤</div>
+        <div class="section-bar-title">Driver Metrics</div>
+        <div class="section-bar-line"></div>
+    </div>
+    <div class="mg3">
+        <div class="mc mc-avail">
+            <div class="mc-bar"></div>
+            <span class="mc-icon">🟢</span>
+            <div class="mc-val">{{ available_drivers }}</div>
+            <div class="mc-label">Available Drivers</div>
+        </div>
+        <div class="mc mc-enroute">
+            <div class="mc-bar"></div>
+            <span class="mc-icon">🔵</span>
+            <div class="mc-val">{{ en_route_drivers }}</div>
+            <div class="mc-label">En-Route Drivers</div>
+        </div>
+        <div class="mc mc-offduty">
+            <div class="mc-bar"></div>
+            <span class="mc-icon">⚫</span>
+            <div class="mc-val">{{ off_duty_drivers }}</div>
+            <div class="mc-label">Off Duty</div>
+        </div>
+    </div>
+
+    <!-- ── TRUCK METRICS ── -->
+    <div class="section-bar">
+        <div class="section-bar-icon sbi-amber">🚛</div>
+        <div class="section-bar-title">Truck Metrics</div>
+        <div class="section-bar-line"></div>
+    </div>
+    <div class="mg3">
+        <div class="mc mc-ttruck">
+            <div class="mc-bar"></div>
+            <span class="mc-icon">🏭</span>
+            <div class="mc-val">{{ total_trucks }}</div>
+            <div class="mc-label">Total Trucks</div>
+        </div>
+        <div class="mc mc-atruck">
+            <div class="mc-bar"></div>
+            <span class="mc-icon">✅</span>
+            <div class="mc-val">{{ available_trucks }}</div>
+            <div class="mc-label">Available Trucks</div>
+        </div>
+        <div class="mc mc-btruck">
+            <div class="mc-bar"></div>
+            <span class="mc-icon">⚡</span>
+            <div class="mc-val">{{ busy_trucks }}</div>
+            <div class="mc-label">Busy Trucks</div>
+        </div>
+    </div>
+
+    <!-- ── SYSTEM HEALTH ── -->
+    <div class="section-bar">
+        <div class="section-bar-icon sbi-red">🔍</div>
+        <div class="section-bar-title">System Health</div>
+        <div class="section-bar-line"></div>
+    </div>
+    <div class="health-card">
+        <div class="health-card-head">Health Monitor</div>
+
+        <div class="health-row">
+            <div class="health-lhs">
+                <div class="health-icon"
+                    style="background:{% if stuck_pickups > 0 %}#fff0f0{% else %}#eafaf1{% endif %}">⏱️</div>
+                <div>
+                    <div class="health-name">Stuck Pickups</div>
+                    <div class="health-desc">Pickups assigned for more than 2 hours without collection</div>
+                </div>
+            </div>
+            <div class="health-rhs">
+                <span class="health-num {% if stuck_pickups > 0 %}hn-danger{% else %}hn-ok{% endif %}">
+                    {{ stuck_pickups }}
+                </span>
+                {% if stuck_pickups > 0 %}
+                <span class="hpill hpill-danger">Needs Attention</span>
+                {% else %}
+                <span class="hpill hpill-ok">All Clear</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="health-row">
+            <div class="health-lhs">
+                <div class="health-icon" style="background:{% if idle_dispatch %}#fff0f0{% else %}#eafaf1{% endif %}">📡
+                </div>
+                <div>
+                    <div class="health-name">Idle Dispatch Detected</div>
+                    <div class="health-desc">Pending pickups that have not been auto-assigned to any truck</div>
+                </div>
+            </div>
+            <div class="health-rhs">
+                <span class="health-num {% if idle_dispatch %}hn-danger{% else %}hn-ok{% endif %}">
+                    {% if idle_dispatch %}YES{% else %}NO{% endif %}
+                </span>
+                {% if idle_dispatch %}
+                <span class="hpill hpill-danger">Investigate</span>
+                {% else %}
+                <span class="hpill hpill-ok">Healthy</span>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Quick actions -->
+    <div class="qactions">
+        <a href="{% url 'request_pickup' %}" class="btn btn-lime">
+            <svg viewBox="0 0 24 24">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            New Pickup Request
+        </a>
+        <a href="{% url 'assigned_pickups' %}" class="btn btn-ghost">
+            <svg viewBox="0 0 24 24">
+                <path d="M9 11l3 3L22 4" />
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+            </svg>
+            View All Assignments
+        </a>
+        <a href="/admin/" class="btn btn-ghost">
+            <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="8" r="4" />
+                <path d="M20 21a8 8 0 1 0-16 0" />
+            </svg>
+            Admin Panel
+        </a>
+    </div>
+
+</div>
 {% endblock %}
